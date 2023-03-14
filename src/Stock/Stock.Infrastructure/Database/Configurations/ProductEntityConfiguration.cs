@@ -4,7 +4,7 @@ using Stock.Domain.Entities;
 
 namespace Stock.Infrastructure.Database.Configurations;
 
-public class GoodEntityConfiguration : IEntityTypeConfiguration<ProductEntity>
+public class ProductEntityConfiguration : IEntityTypeConfiguration<ProductEntity>
 {
     public void Configure(EntityTypeBuilder<ProductEntity> builder)
     {
