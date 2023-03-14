@@ -6,4 +6,12 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Handlers" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Shop.Infrastructure\Shop.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>
