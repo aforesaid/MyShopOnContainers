@@ -6,7 +6,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="MassTransit.Abstractions" Version="8.0.13" />
+      <ProjectReference Include="..\Shop.Domain\Shop.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
     </ItemGroup>
 
 </Project>

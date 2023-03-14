@@ -1,6 +1,6 @@
-﻿namespace Shop.Domain.Enums;
+﻿namespace Interfaces.Shop.Enums;
 
-public enum OrderStatesEnum
+public enum ShopOrderStatesEnum
 {
     None = 0,
     Pending = 10,

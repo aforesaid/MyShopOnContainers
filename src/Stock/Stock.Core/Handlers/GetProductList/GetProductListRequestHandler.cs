@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Stock.Infrastructure.Database;
-using Stock.MediatR.Contracts.Requests.GetProductList;
+using Stock.MediatR.Contracts.Requests;
 using Stock.MediatR.Contracts.Shared;
 
 namespace Stock.Core.Handlers.GetProductList;
@@ -26,18 +26,12 @@ public class GetProductListRequestHandler : IRequestHandler<GetProductListReques
         }
 
         var products = await q.AsNoTracking()
+            .Select(x => new ProductInfo(x.Id,
+                x.Name,
+                x.Available - x.Reserved))
             .ToListAsync(cancellationToken: cancellationToken);
 
-        var resultItems = products.Select(x =>
-        {
-            var free = x.Available - x.Reserved;
-            
-            return new ProductInfo(x.Id,
-                x.Name,
-                free);
-        });
-
-        var result = new GetProductListResponse(resultItems);
+        var result = new GetProductListResponse(products);
         return result;
     }
 }

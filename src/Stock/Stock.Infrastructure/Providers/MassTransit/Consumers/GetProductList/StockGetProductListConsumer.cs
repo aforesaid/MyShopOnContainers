@@ -2,7 +2,7 @@
 using Interfaces.Stock.Shared;
 using MassTransit;
 using MediatR;
-using Stock.MediatR.Contracts.Requests.GetProductList;
+using Stock.MediatR.Contracts.Requests;
 
 namespace Stock.Infrastructure.Providers.MassTransit.Consumers.GetProductList;
 

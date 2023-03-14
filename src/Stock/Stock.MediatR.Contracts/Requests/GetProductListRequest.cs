@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Stock.MediatR.Contracts.Shared;
 
-namespace Stock.MediatR.Contracts.Requests.GetProductList;
+namespace Stock.MediatR.Contracts.Requests;
 
 public class GetProductListRequest : IRequest<GetProductListResponse>
 {

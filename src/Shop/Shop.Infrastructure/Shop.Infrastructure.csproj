@@ -7,10 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Providers" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <PackageReference Include="MassTransit" Version="8.0.13" />
+      <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.13" />
+      <PackageReference Include="MediatR" Version="12.0.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.4" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.4">
         <PrivateAssets>all</PrivateAssets>
@@ -20,7 +20,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Interfaces.Shop\Interfaces.Shop.csproj" />
       <ProjectReference Include="..\Shop.Domain\Shop.Domain.csproj" />
+      <ProjectReference Include="..\Shop.MediatR.Contracts\Shop.MediatR.Contracts.csproj" />
     </ItemGroup>
 
 </Project>
