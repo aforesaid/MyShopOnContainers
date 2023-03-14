@@ -12,7 +12,7 @@ using Stock.Infrastructure.Database;
 namespace Stock.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(StockDbContext))]
-    [Migration("20230313231339_Init")]
+    [Migration("20230314131029_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace Stock.Infrastructure.Database.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Stock.Domain.Entities.GoodEntity", b =>
+            modelBuilder.Entity("Stock.Domain.Entities.ProductEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -49,7 +49,7 @@ namespace Stock.Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GoodEntities");
+                    b.ToTable("ProductEntities");
                 });
 #pragma warning restore 612, 618
         }

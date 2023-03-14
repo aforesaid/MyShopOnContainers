@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Core", "Web\Web.Core\We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Infrastructure", "Web\Web.Infrastructure\Web.Infrastructure.csproj", "{21476C9F-8955-474C-ACC0-1614AFD84F12}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stock.MediatR.Contracts", "Stock\Stock.MediatR.Contracts\Stock.MediatR.Contracts.csproj", "{36D0C3B8-BB3E-4309-ABBF-74956318EEAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,7 @@ Global
 		{5E6CD0F8-6C79-4BA8-B3C8-F689FB979873} = {693F4606-98E1-45CF-85D5-F5A3A006BA95}
 		{5F6E5D3E-57AC-4586-92D9-A853AFB6DDE6} = {693F4606-98E1-45CF-85D5-F5A3A006BA95}
 		{21476C9F-8955-474C-ACC0-1614AFD84F12} = {693F4606-98E1-45CF-85D5-F5A3A006BA95}
+		{36D0C3B8-BB3E-4309-ABBF-74956318EEAF} = {DEF36CF8-7D0B-4100-A71B-29FAB2DF491D}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D2CE0DDE-20F3-4C9C-BCE1-4ADF5955DC0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -105,5 +108,9 @@ Global
 		{21476C9F-8955-474C-ACC0-1614AFD84F12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21476C9F-8955-474C-ACC0-1614AFD84F12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21476C9F-8955-474C-ACC0-1614AFD84F12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36D0C3B8-BB3E-4309-ABBF-74956318EEAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36D0C3B8-BB3E-4309-ABBF-74956318EEAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36D0C3B8-BB3E-4309-ABBF-74956318EEAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36D0C3B8-BB3E-4309-ABBF-74956318EEAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

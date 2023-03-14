@@ -6,7 +6,7 @@ namespace Stock.Infrastructure.Database;
 
 public class StockDbContext : DbContext
 {
-    public DbSet<GoodEntity> GoodEntities { get; protected set; }
+    public DbSet<ProductEntity> ProductEntities { get; protected set; }
     
     public StockDbContext() 
         : base(){ }

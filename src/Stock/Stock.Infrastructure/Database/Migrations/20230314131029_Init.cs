@@ -12,7 +12,7 @@ namespace Stock.Infrastructure.Database.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "GoodEntities",
+                name: "ProductEntities",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -24,7 +24,7 @@ namespace Stock.Infrastructure.Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GoodEntities", x => x.Id);
+                    table.PrimaryKey("PK_ProductEntities", x => x.Id);
                 });
         }
 
@@ -32,7 +32,7 @@ namespace Stock.Infrastructure.Database.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "GoodEntities");
+                name: "ProductEntities");
         }
     }
 }

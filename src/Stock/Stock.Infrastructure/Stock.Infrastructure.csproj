@@ -7,14 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Providers" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <ProjectReference Include="..\Interfaces.Stock\Interfaces.Stock.csproj" />
       <ProjectReference Include="..\Stock.Domain\Stock.Domain.csproj" />
+      <ProjectReference Include="..\Stock.MediatR.Contracts\Stock.MediatR.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="MassTransit" Version="8.0.13" />
+      <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.13" />
+      <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.3" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">
         <PrivateAssets>all</PrivateAssets>

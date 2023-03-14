@@ -2,14 +2,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Stock.Domain.Entities;
 
-public class GoodEntity : BaseEntity
+public class ProductEntity : BaseEntity
 {
     private const int MaxNameLength = 128;
     
-    private GoodEntity()
+    private ProductEntity()
     { }
 
-    public GoodEntity(string name,
+    public ProductEntity(string name,
         int available = 0)
     {
         Name = name;
