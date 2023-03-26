@@ -3,7 +3,6 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,9 +19,14 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Stock\Interfaces.Stock\Interfaces.Stock.csproj" />
       <ProjectReference Include="..\Interfaces.Shop\Interfaces.Shop.csproj" />
       <ProjectReference Include="..\Shop.Domain\Shop.Domain.csproj" />
       <ProjectReference Include="..\Shop.MediatR.Contracts\Shop.MediatR.Contracts.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Providers\MassTransit\CouriersActivities" />
     </ItemGroup>
 
 </Project>

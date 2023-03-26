@@ -12,7 +12,7 @@ using Stock.Infrastructure.Database;
 namespace Stock.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(StockDbContext))]
-    [Migration("20230314131029_Init")]
+    [Migration("20230326110508_Init")]
     partial class Init
     {
         /// <inheritdoc />

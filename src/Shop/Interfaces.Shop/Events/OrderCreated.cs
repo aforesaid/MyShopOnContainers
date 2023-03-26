@@ -1,4 +1,4 @@
-﻿namespace Interfaces.Shop.Messages;
+﻿namespace Interfaces.Shop.Events;
 
 public class OrderCreated
 {
@@ -8,17 +8,17 @@ public class OrderCreated
     public OrderCreated(Guid userId,
         Guid orderId, 
         Guid productId,
-        int productCount)
+        int quantity)
     {
         UserId = userId;
         OrderId = orderId;
         ProductId = productId;
-        ProductCount = productCount;
+        Quantity = quantity;
     }
     
     public Guid UserId { get; set; }
     public Guid OrderId { get; set; }
     
     public Guid ProductId { get; set; }
-    public int ProductCount { get; set; }
+    public int Quantity { get; set; }
 }

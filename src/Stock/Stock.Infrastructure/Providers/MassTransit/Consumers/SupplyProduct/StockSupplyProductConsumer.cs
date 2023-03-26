@@ -1,4 +1,5 @@
-﻿using Interfaces.Stock.Messages;
+﻿using Interfaces.Stock.Events;
+using Interfaces.Stock.Messages;
 using Interfaces.Stock.Requests;
 using MassTransit;
 using MediatR;
@@ -23,12 +24,12 @@ public class StockSupplyProductConsumer : IConsumer<StockSupplyProductRequest>
         var request = context.Message;
 
         var mediatrRequest = new SupplyProductCommand(request.ProductId,
-            request.ProductCount);
+            request.Quantity);
         var mediatrResponse = await _mediator.Send(mediatrRequest);
         if (mediatrResponse)
         {
             var message = new StockNewSupply(request.ProductId,
-                request.ProductCount);
+                request.Quantity);
             await _publishEndpoint.Publish<StockNewSupply>(message);
         }
 

@@ -30,11 +30,11 @@ namespace Shop.Infrastructure.Database.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("ProductCount")
-                        .HasColumnType("integer");
-
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
 
                     b.Property<int>("State")
                         .HasColumnType("integer");

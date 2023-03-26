@@ -10,7 +10,7 @@ public class ShopOrderInfo
     public ShopOrderInfo(Guid userId,
         Guid orderId, 
         Guid productId, 
-        int productCount, 
+        int quantity, 
         ShopOrderStatesEnum orderState, 
         DateTime created,
         DateTime updated)
@@ -18,7 +18,7 @@ public class ShopOrderInfo
         UserId = userId;
         OrderId = orderId;
         ProductId = productId;
-        ProductCount = productCount;
+        Quantity = quantity;
         OrderState = orderState;
         Created = created;
         Updated = updated;
@@ -28,7 +28,7 @@ public class ShopOrderInfo
     public Guid OrderId { get; set; }
     
     public Guid ProductId { get; set; }
-    public int ProductCount { get; set; }
+    public int Quantity { get; set; }
     
     public ShopOrderStatesEnum OrderState { get; set; }
     

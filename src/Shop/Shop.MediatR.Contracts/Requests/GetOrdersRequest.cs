@@ -8,10 +8,13 @@ public class GetOrdersRequest : IRequest<GetOrdersResponse>
     public GetOrdersRequest()
     { }
 
-    public GetOrdersRequest(IEnumerable<Guid> userIds = null)
+    public GetOrdersRequest(IEnumerable<Guid> orderIds = null,
+        IEnumerable<Guid> userIds = null)
     {
+        OrderIds = orderIds;
         UserIds = userIds;
     }
+    public IEnumerable<Guid> OrderIds { get; set; }
     public IEnumerable<Guid> UserIds { get; set; }
 }
 

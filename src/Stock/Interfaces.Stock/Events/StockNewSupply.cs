@@ -1,4 +1,4 @@
-﻿namespace Interfaces.Stock.Messages;
+﻿namespace Interfaces.Stock.Events;
 
 public class StockNewSupply
 {
@@ -6,11 +6,11 @@ public class StockNewSupply
     { }
 
     public StockNewSupply(Guid productId, 
-        int productCount)
+        int quantity)
     {
         ProductId = productId;
-        ProductCount = productCount;
+        Quantity = quantity;
     }
     public Guid ProductId { get; set; }
-    public int ProductCount { get; set; }
+    public int Quantity { get; set; }
 }

@@ -23,7 +23,7 @@ public class SupplyProductRequestHandler : IRequestHandler<SupplyProductCommand,
             throw new ArgumentException($"Not found product with Id {request.ProductId}");
         }
         
-        product.Supply(request.ProductCount);
+        product.Supply(request.Quantity);
         await _stockDbContext.SaveChangesAsync(cancellationToken);
 
         return true;

@@ -25,11 +25,16 @@ public class GetOrdersRequestHandler : IRequestHandler<GetOrdersRequest, GetOrde
             q = q.Where(x => request.UserIds.Contains(x.UserId));
         }
 
+        if (request.OrderIds != null && request.OrderIds.Any())
+        {
+            q = q.Where(x => request.OrderIds.Contains(x.Id));
+        }
+        
         var orders = await q.AsNoTracking()
             .Select(x => new OrderInfo(x.UserId,
                 x.Id,
                 x.ProductId,
-                x.ProductCount,
+                x.Quantity,
                 x.State,
                 x.Created,
                 x.Updated))

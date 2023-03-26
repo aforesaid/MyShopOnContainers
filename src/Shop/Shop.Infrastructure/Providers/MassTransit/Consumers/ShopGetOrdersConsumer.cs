@@ -27,7 +27,7 @@ public class ShopGetOrdersConsumer : IConsumer<ShopGetOrdersRequest>
             .Select(x => new ShopOrderInfo(x.UserId,
                 x.OrderId,
                 x.ProductId,
-                x.ProductCount,
+                x.Quantity,
                 (ShopOrderStatesEnum) x.OrderState,
                 x.Created,
                 x.Updated)));
