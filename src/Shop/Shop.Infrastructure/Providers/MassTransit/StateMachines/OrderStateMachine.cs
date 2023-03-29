@@ -107,7 +107,6 @@ public class OrderStateMachine
                 })
                 .Send(context => new OrderCompleted(context.Message.OrderId))
                 .TransitionTo(Completed));
-        
     }
     
     public State Created { get; set; }
@@ -115,6 +114,7 @@ public class OrderStateMachine
     public State Reserved { get; set; }
     public State Completed { get; set; }
     
+    public State PreCanceled { get; set; }
     public State Canceled { get; set; }
     public State Faulted { get; set; }
     

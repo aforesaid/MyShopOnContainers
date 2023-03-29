@@ -31,7 +31,7 @@ public class ShopGetOrdersConsumer : IConsumer<ShopGetOrdersRequest>
                 (ShopOrderStatesEnum) x.OrderState,
                 x.Created,
                 x.Updated)));
-        await context.RespondAsync<ShopGetOrdersResponse>(result);
+        await context.RespondAsync(result);
     }
 }
 

@@ -1,10 +1,11 @@
 ﻿using MassTransit;
-using MassTransit.MultiBus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shop.Infrastructure.Database;
 using Shop.Infrastructure.Providers.MassTransit.Consumers;
+using Shop.Infrastructure.Providers.MassTransit.CouriersActivities;
+using Shop.Infrastructure.Providers.MassTransit.StateMachines;
 
 namespace Shop.Infrastructure;
 
@@ -27,7 +28,11 @@ public static class ShopConfiguration
     {
         serviceCollection.AddMassTransit(x =>
         {
-            x.AddConsumer<ShopGetOrdersConsumer>(typeof(ShopGetOrdersConsumerDefinition));
+            x.AddConsumersFromNamespaceContaining<ShopGetOrdersConsumer>();
+            x.AddActivitiesFromNamespaceContaining<OrderAcceptActivity>();
+            
+            x.AddSagaStateMachine<OrderStateMachine, OrderState>()
+                .RedisRepository(configuration["REDIS"]);
             
             x.UsingRabbitMq((context, cfg) =>
             {
