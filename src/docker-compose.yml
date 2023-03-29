@@ -13,14 +13,46 @@ services:
          - POSTGRES_PASSWORD=password
       ports:
          - "5432:5432"
-  redis:
-      image: redis:6.2-alpine
-      restart: always
+  mongodb:
+      image : mongo
+      environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=myPassword1
+      volumes:
+      - mongodb-data:/data/db
       ports:
-         - "6379:6379"
-      command: redis-server --requirepass myPassword1@
-      volumes: 
-         - redis:/data
+      - 27017:27017
+      restart: unless-stopped
+  web:
+      build:
+        context: .
+        dockerfile: ./Web/Web.API/Dockerfile
+      ports:
+        - "5000:5000"
+      environment:
+        - RABBIT_HOST=localhost
+        - RABBIT_LOGIN=guest
+        - RABBIT_PASSWORD=guest
+  shop:
+      build:
+        context: .
+        dockerfile: ./Shop/Shop.Application/Dockerfile
+      environment:
+        - RABBIT_HOST=localhost
+        - RABBIT_LOGIN=guest
+        - RABBIT_PASSWORD=guest
+        - PrefetchCount=100
+        - POSTGRES=User ID=postgres;Password=password;Server=localhost;Port=5432;Database=shop;Integrated Security=true;
+        - REDIS=localhost,password=myPassword1@,ssl=false,abortConnect=false,defaultDatabase=1,syncTimeout=10000
+  stock:
+    build:
+      context: .
+      dockerfile: ./Stock/Stock.Application/Dockerfile
+    environment:
+      - RABBIT_HOST=localhost
+      - RABBIT_LOGIN=guest
+      - RABBIT_PASSWORD=guest
+      - PrefetchCount=100
+      - POSTGRES=User ID=postgres;Password=password;Server=localhost;Port=5432;Database=stock;Integrated Security=true;
 volumes:
-  redis:
-    driver: local
+ mongodb-data:

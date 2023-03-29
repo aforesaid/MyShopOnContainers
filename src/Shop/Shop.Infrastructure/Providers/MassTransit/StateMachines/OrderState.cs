@@ -1,14 +1,16 @@
 using MassTransit;
-using MassTransit.RedisSagas;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Shop.Infrastructure.Providers.MassTransit.StateMachines;
 
 public class OrderState
-    : SagaStateMachineInstance,
-        IVersionedSaga
+    : SagaStateMachineInstance, 
+        ISagaVersion
 {
-    public string CurrentState { get; set; }
+    [BsonId]
     public Guid CorrelationId { get; set; }
+    public string CurrentState { get; set; }
+    
     public DateTime Updated { get; set; }
     public int Version { get; set; }
 }

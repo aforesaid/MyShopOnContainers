@@ -32,7 +32,11 @@ public static class ShopConfiguration
             x.AddActivitiesFromNamespaceContaining<OrderAcceptActivity>();
             
             x.AddSagaStateMachine<OrderStateMachine, OrderState>()
-                .RedisRepository(configuration["REDIS"]);
+                .MongoDbRepository(r =>
+                {
+                    r.Connection = configuration["MongoDb"];
+                    r.DatabaseName = "orderStates";
+                });
             
             x.UsingRabbitMq((context, cfg) =>
             {

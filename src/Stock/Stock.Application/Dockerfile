@@ -3,16 +3,16 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Stock/MyShopOnContainers.Stock/MyShopOnContainers.Stock.csproj", "Stock/MyShopOnContainers.Stock/"]
-RUN dotnet restore "Stock/MyShopOnContainers.Stock/MyShopOnContainers.Stock.csproj"
+COPY ["Stock/Stock.Application/Stock.Application.csproj", "Stock/Stock.Application/"]
+RUN dotnet restore "Stock/Stock.Application/Stock.Application.csproj"
 COPY . .
-WORKDIR "/src/Stock/MyShopOnContainers.Stock"
-RUN dotnet build "MyShopOnContainers.Stock.csproj" -c Release -o /app/build
+WORKDIR "/src/Stock/Stock.Application"
+RUN dotnet build "Stock.Application.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "MyShopOnContainers.Stock.csproj" -c Release -o /app/publish
+RUN dotnet publish "Stock.Application.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "MyShopOnContainers.Stock.dll"]
+ENTRYPOINT ["dotnet", "Stock.Application.dll"]

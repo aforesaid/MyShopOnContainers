@@ -6,10 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="MassTransit" Version="8.0.13" />
-      <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
-      <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.13" />
-      <PackageReference Include="MassTransit.RedisSagas" Version="6.3.2.88" />
+      <PackageReference Include="MassTransit.MongoDb" Version="8.0.14" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.14" />
       <PackageReference Include="MediatR" Version="12.0.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.4" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.4">
