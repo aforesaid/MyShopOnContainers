@@ -68,7 +68,7 @@ public class ProductEntity : BaseEntity
         }
         else
         {
-            throw new ArgumentException();
+            throw new ReleaseProductException();
         }
     }
 }
