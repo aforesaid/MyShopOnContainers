@@ -1,13 +1,31 @@
 using Interfaces.Shop.Requests;
 using MassTransit;
+using MediatR;
+using Shop.MediatR.Contracts.Requests;
 
 namespace Shop.Infrastructure.Providers.MassTransit.Consumers;
 
 public class ShopCreateOrderConsumer : IConsumer<ShopCreateOrderRequest>
 {
-    public Task Consume(ConsumeContext<ShopCreateOrderRequest> context)
+    private readonly IMediator _mediator;
+
+    public ShopCreateOrderConsumer(IMediator mediator)
     {
-        throw new NotImplementedException();
+        _mediator = mediator;
+    }
+
+    public async Task Consume(ConsumeContext<ShopCreateOrderRequest> context)
+    {
+        var request = context.Message;
+
+        var mediatrRequest = new CreateOrderRequest(request.UserId,
+            request.ProductId,
+            request.Quantity);
+        var mediatrResponse = await _mediator.Send(mediatrRequest);
+
+        var orderId = mediatrResponse.OrderId;
+        var response = new ShopCreateOrderResponse(orderId);
+        await context.RespondAsync(response);
     }
 }
 
