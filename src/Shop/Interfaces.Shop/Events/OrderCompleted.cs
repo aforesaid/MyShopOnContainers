@@ -5,12 +5,9 @@ public class OrderCompleted
     public OrderCompleted()
     { }
 
-    public OrderCompleted(Guid userId, 
-        Guid orderId)
+    public OrderCompleted(Guid orderId)
     {
-        UserId = userId;
         OrderId = orderId;
     }
-    public Guid UserId { get; set; }
     public Guid OrderId { get; set; }
 }

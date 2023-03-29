@@ -3,8 +3,10 @@
 public enum OrderStatesEnum
 {
     None = 0,
-    Pending = 10,
-    Reserved = 20,
-    Completed = 30,
+    Created = 10,
+    Accepted = 20,
+    Reserved = 30,
+    Completed = 40,
+    Canceled = 90,
     Rejected = 100
 }

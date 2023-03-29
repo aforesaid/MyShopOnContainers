@@ -5,11 +5,9 @@ public class OrderCancelled
     public OrderCancelled()
     { }
 
-    public OrderCancelled(Guid userId, Guid orderId)
+    public OrderCancelled(Guid orderId)
     {
-        UserId = userId;
         OrderId = orderId;
     }
-    public Guid UserId { get; set; }
     public Guid OrderId { get; set; }
 }

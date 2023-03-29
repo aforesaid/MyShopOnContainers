@@ -13,7 +13,7 @@ public class OrderEntity : BaseEntity
         ProductId = productId;
         Quantity = quantity;
         
-        State = OrderStatesEnum.Pending;
+        State = OrderStatesEnum.None;
     }
     
     public Guid UserId { get; private set; }

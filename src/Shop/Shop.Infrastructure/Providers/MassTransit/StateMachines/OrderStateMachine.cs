@@ -1,7 +1,11 @@
+using Interfaces.Shop.Commands;
 using Interfaces.Shop.Events;
 using Interfaces.Stock.Events;
 using Interfaces.Stock.Messages;
 using MassTransit;
+using MediatR;
+using Shop.Domain.Enums;
+using Shop.MediatR.Contracts.Requests;
 
 namespace Shop.Infrastructure.Providers.MassTransit.StateMachines;
 
@@ -23,18 +27,83 @@ public class OrderStateMachine
             x => x.CorrelateById(m => m.Message.OrderId));
         Event(() => StockReleased,
             x => x.CorrelateById(m => m.Message.OrderId));
-        Event(() => OrderCompleted,
+        Event(() => ReserveCancelled,
             x => x.CorrelateById(m => m.Message.OrderId));
-        Event(() => OrderCancelled,
-            x => x.CorrelateById(m => m.Message.OrderId));
-            
+
         Initially(
             When(OrderCreated)
-                .Then(context =>
+                .ThenAsync(async context =>
                 {
                     context.Saga.Updated = DateTime.UtcNow;
-                })  
+
+                    var mediator = context.GetServiceOrCreateInstance<IMediator>();
+                    var setOrderStateRequest = new SetOrderStateRequest(context.Message.OrderId,
+                        OrderStatesEnum.Created);
+                    await mediator.Send(setOrderStateRequest);
+                })
+                .Send(context => new ShopReserveProductForOrderCommand(context.Message.OrderId))
+                .Send(context => new OrderCreated(context.Message.UserId,
+                    context.Message.OrderId, 
+                    context.Message.ProductId,
+                    context.Message.Quantity))
                 .TransitionTo(Created));
+        
+        During(Accepted,
+            When(OrderAccepted)
+                .ThenAsync(async context =>
+                {
+                    var mediator = context.GetServiceOrCreateInstance<IMediator>();
+                    var setOrderStateRequest = new SetOrderStateRequest(context.Message.OrderId,
+                        OrderStatesEnum.Accepted);
+                    await mediator.Send(setOrderStateRequest);
+                })
+                .Send(context => new OrderAccepted(context.Message.OrderId))
+                .TransitionTo(Accepted)
+            );
+        
+        During(Accepted,
+            When(StockReserved)
+                .ThenAsync(async context =>
+                {
+                    var mediator = context.GetServiceOrCreateInstance<IMediator>();
+                    var setOrderStateRequest = new SetOrderStateRequest(context.Message.OrderId,
+                        OrderStatesEnum.Reserved);
+                    await mediator.Send(setOrderStateRequest);
+                })
+                .TransitionTo(Reserved),
+            When(OutOfStock)
+                .ThenAsync(async context =>
+                {
+                    var mediator = context.GetServiceOrCreateInstance<IMediator>();
+                    var setOrderStateRequest = new SetOrderStateRequest(context.Message.OrderId,
+                        OrderStatesEnum.Rejected);
+                    await mediator.Send(setOrderStateRequest);
+                })
+                .Send(context => new OrderFaulted(context.Message.OrderId))
+                .TransitionTo(Faulted));
+        
+        During(Reserved,
+            When(ReserveCancelled)
+                .ThenAsync(async context =>
+                {
+                    var mediator = context.GetServiceOrCreateInstance<IMediator>();
+                    var setOrderStateRequest = new SetOrderStateRequest(context.Message.OrderId,
+                        OrderStatesEnum.Canceled);
+                    await mediator.Send(setOrderStateRequest);
+                })
+                .Send(context => new OrderCancelled(context.Message.OrderId))
+                .TransitionTo(Canceled),
+            When(StockReleased)
+                .ThenAsync(async context =>
+                {
+                    var mediator = context.GetServiceOrCreateInstance<IMediator>();
+                    var setOrderStateRequest = new SetOrderStateRequest(context.Message.OrderId,
+                        OrderStatesEnum.Completed);
+                    await mediator.Send(setOrderStateRequest);
+                })
+                .Send(context => new OrderCompleted(context.Message.OrderId))
+                .TransitionTo(Completed));
+        
     }
     
     public State Created { get; set; }
@@ -42,14 +111,13 @@ public class OrderStateMachine
     public State Reserved { get; set; }
     public State Completed { get; set; }
     
-    public State Cancelled { get; set; }
+    public State Canceled { get; set; }
     public State Faulted { get; set; }
     
     public Event<OrderCreated> OrderCreated { get; set; }
     public Event<OrderAccepted> OrderAccepted { get; set; }
     public Event<StockReserved> StockReserved { get; set; }
     public Event<StockOutOfStock> OutOfStock { get; set; }
+    public Event<StockReserveCancelled> ReserveCancelled { get; set; }
     public Event<StockReleased> StockReleased { get; set; }
-    public Event<OrderCompleted> OrderCompleted { get; set; }
-    public Event<OrderCancelled> OrderCancelled { get; set; }
 }

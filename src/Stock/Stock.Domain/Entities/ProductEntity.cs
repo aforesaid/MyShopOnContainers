@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Stock.Domain.Exceptions;
 
 namespace Stock.Domain.Entities;
 
@@ -39,7 +40,22 @@ public class ProductEntity : BaseEntity
         }
         else
         {
-            throw new ArgumentException();
+            throw new ReserveProductException();
+        }
+    }
+    
+    public void CancelReservation(int cancelReserveCount)
+    {
+        if (Reserved >= cancelReserveCount)
+        {
+            Reserved -= cancelReserveCount;
+            Available += cancelReserveCount;
+
+            SetUpdated();
+        }
+        else
+        {
+            throw new OutOfStockException();
         }
     }
 

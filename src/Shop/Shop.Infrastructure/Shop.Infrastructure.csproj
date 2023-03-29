@@ -25,8 +25,4 @@
       <ProjectReference Include="..\Shop.MediatR.Contracts\Shop.MediatR.Contracts.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Providers\MassTransit\CouriersActivities" />
-    </ItemGroup>
-
 </Project>
