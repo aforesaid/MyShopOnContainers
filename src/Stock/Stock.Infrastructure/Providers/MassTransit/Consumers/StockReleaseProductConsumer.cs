@@ -4,7 +4,7 @@ using MassTransit;
 using MediatR;
 using Stock.MediatR.Contracts.Requests;
 
-namespace Stock.Infrastructure.Providers.MassTransit.Consumers.ReleaseProduct;
+namespace Stock.Infrastructure.Providers.MassTransit.Consumers;
 
 public class StockReleaseProductConsumer : IConsumer<StockReleaseProductCommand>
 {

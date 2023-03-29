@@ -6,7 +6,7 @@ using MediatR;
 using Stock.Domain.Exceptions;
 using Stock.MediatR.Contracts.Requests;
 
-namespace Stock.Infrastructure.Providers.MassTransit.Consumers.ReserveProduct;
+namespace Stock.Infrastructure.Providers.MassTransit.Consumers;
 
 public class StockReserveProductConsumer : IConsumer<StockReserveProductCommand>
 {

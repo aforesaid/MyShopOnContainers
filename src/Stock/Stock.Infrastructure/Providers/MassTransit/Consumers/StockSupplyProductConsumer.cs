@@ -1,11 +1,10 @@
 ﻿using Interfaces.Stock.Events;
-using Interfaces.Stock.Messages;
 using Interfaces.Stock.Requests;
 using MassTransit;
 using MediatR;
 using Stock.MediatR.Contracts.Commands.SupplyProduct;
 
-namespace Stock.Infrastructure.Providers.MassTransit.Consumers.SupplyProduct;
+namespace Stock.Infrastructure.Providers.MassTransit.Consumers;
 
 public class StockSupplyProductConsumer : IConsumer<StockSupplyProductRequest>
 {

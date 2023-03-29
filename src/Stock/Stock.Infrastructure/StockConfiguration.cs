@@ -3,8 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Stock.Infrastructure.Database;
-using Stock.Infrastructure.Providers.MassTransit.Consumers.GetProductList;
-using Stock.Infrastructure.Providers.MassTransit.Consumers.SupplyProduct;
+using Stock.Infrastructure.Providers.MassTransit.Consumers;
 
 namespace Stock.Infrastructure;
 
@@ -27,8 +26,7 @@ public static class StockConfiguration
     {
         serviceCollection.AddMassTransit(x =>
         {
-            x.AddConsumer<StockGetProductListConsumer>(typeof(StockGetProductListConsumerDefinition));
-            x.AddConsumer<StockSupplyProductConsumer>(typeof(StockSupplyProductConsumerDefinition));
+            x.AddConsumersFromNamespaceContaining<StockGetProductListConsumer>();
             
             x.UsingRabbitMq((context, cfg) =>
             {
