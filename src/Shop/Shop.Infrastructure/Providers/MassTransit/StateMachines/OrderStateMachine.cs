@@ -29,7 +29,9 @@ public class OrderStateMachine
             x => x.CorrelateById(m => m.Message.OrderId));
         Event(() => ReserveCancelled,
             x => x.CorrelateById(m => m.Message.OrderId));
-
+        Event(() => OrderFaulted,
+            x => x.CorrelateById(m => m.Message.OrderId));
+        
         Initially(
             When(OrderCreated)
                 .ThenAsync(async context =>
