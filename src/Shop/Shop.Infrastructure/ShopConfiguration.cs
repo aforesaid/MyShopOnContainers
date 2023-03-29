@@ -34,7 +34,7 @@ public static class ShopConfiguration
             x.AddSagaStateMachine<OrderStateMachine, OrderState>()
                 .MongoDbRepository(r =>
                 {
-                    r.Connection = configuration["MongoDb"];
+                    r.Connection = configuration.GetConnectionString("MongoDb");
                     r.DatabaseName = "orderStates";
                 });
             
