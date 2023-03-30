@@ -124,6 +124,6 @@ public class OrderStateMachine
     public Event<StockOutOfStock> OutOfStock { get; set; }
     public Event<StockReserveCancelled> ReserveCancelled { get; set; }
     public Event<StockReleased> StockReleased { get; set; }
-    public Event<OrderAccepted> OrderFaulted { get; set; }
+    public Event<OrderFaulted> OrderFaulted { get; set; }
 
 }
