@@ -33,7 +33,11 @@ public class OrderStockStatusActivity
         var getStockProductInfoRequest = new StockGetProductListRequest(new[] { targetProductId });
         var getStockProductInfoResponse = await _stockProvider.GetProductList(getStockProductInfoRequest);
 
-        var stockProductInfo = getStockProductInfoResponse.Products.First();
+        var stockProductInfo = getStockProductInfoResponse.Products.FirstOrDefault();
+        if (stockProductInfo == null)
+        {
+            throw new ArgumentException($"Not found product {targetProductId}");
+        }
 
         if (stockProductInfo.Free < orderInfo.Quantity)
         {
