@@ -25,7 +25,7 @@ services:
       restart: unless-stopped
   web:
       build:
-        context: .
+        context: ./src
         dockerfile: ./Web/Web.API/Dockerfile
       ports:
         - "5000:5000"
@@ -35,7 +35,7 @@ services:
         - RABBIT_PASSWORD=guest
   shop:
       build:
-        context: .
+        context: ./src
         dockerfile: ./Shop/Shop.Application/Dockerfile
       environment:
         - RABBIT_HOST=rabbit
@@ -46,7 +46,7 @@ services:
         - ConnectionStrings__MongoDb=mongodb://root:myPassword1@mongodb:27017
   stock:
     build:
-      context: .
+      context: ./src
       dockerfile: ./Stock/Stock.Application/Dockerfile
     environment:
       - RABBIT_HOST=rabbit
