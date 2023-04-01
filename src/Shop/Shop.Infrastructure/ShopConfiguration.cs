@@ -1,10 +1,9 @@
 ﻿using MassTransit;
+using MassTransit.MongoDbIntegration.MessageData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shop.Infrastructure.Database;
-using Shop.Infrastructure.Providers.MassTransit.Consumers;
-using Shop.Infrastructure.Providers.MassTransit.CouriersActivities;
 using Shop.Infrastructure.Providers.MassTransit.StateMachines;
 
 namespace Shop.Infrastructure;
@@ -28,18 +27,21 @@ public static class ShopConfiguration
     {
         serviceCollection.AddMassTransit(x =>
         {
-            x.AddConsumersFromNamespaceContaining<ShopGetOrdersConsumer>();
-            x.AddActivitiesFromNamespaceContaining<OrderAcceptActivity>();
-            
+            const string ordersDatabase = "orders";
+            x.AddConsumers(typeof(ShopConfiguration).Assembly);
+            x.AddActivities(typeof(ShopConfiguration).Assembly);
+
             x.AddSagaStateMachine<OrderStateMachine, OrderState>()
                 .MongoDbRepository(r =>
                 {
                     r.Connection = configuration.GetConnectionString("MongoDb");
-                    r.DatabaseName = "orderStates";
+                    r.DatabaseName = ordersDatabase;
                 });
             
             x.UsingRabbitMq((context, cfg) =>
             {
+                cfg.UseMessageData(new MongoDbMessageDataRepository(configuration.GetConnectionString("MongoDb"), ordersDatabase));
+
                 const string prefetchCountHeader = "PrefetchCount";
 
                 var prefetchCount = int.Parse(configuration[prefetchCountHeader] ?? string.Empty);

@@ -1,7 +1,6 @@
 using Interfaces.Stock.Commands;
 using MassTransit;
 using MediatR;
-using Shop.Domain.Enums;
 using Shop.MediatR.Contracts.Requests;
 
 namespace Shop.Infrastructure.Providers.MassTransit.CouriersActivities;
@@ -9,7 +8,7 @@ namespace Shop.Infrastructure.Providers.MassTransit.CouriersActivities;
 public class OrderAcceptActivity
 : IExecuteActivity<OrderAcceptActivityArguments>
 {
-    public static readonly Uri ExecuteAddress = new("queue:order-accept_execute");
+    public static readonly Uri ExecuteAddress = new("queue:OrderAccept_execute");
 
     private readonly IMediator _mediator;
 
