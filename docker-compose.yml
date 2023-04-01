@@ -5,34 +5,36 @@ services:
       hostname: rabbit
       image: rabbitmq:3.11.1-management
       ports:
-         - "5672:5672" 
-         - "15672:15672"  
+        - "5672:5672" 
+        - "15672:15672"  
   postgres:
       image: postgres:13-alpine
       environment:
-         - POSTGRES_PASSWORD=password
+        - POSTGRES_PASSWORD=password
       ports:
-         - "5432:5432"
+        - "5432:5432"
   mongodb:
-      image : mongo
+      image: mongo
       environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=myPassword1
+        - MONGO_INITDB_ROOT_USERNAME=root
+        - MONGO_INITDB_ROOT_PASSWORD=myPassword1
       volumes:
-      - mongodb-data:/data/db
+        - mongodb-data:/data/db
       ports:
-      - 27017:27017
+        - "27017:27017"
       restart: unless-stopped
   web:
       build:
         context: ./src
         dockerfile: ./Web/Web.API/Dockerfile
       ports:
-        - "5000:5000"
+        - "5000:80"
       environment:
         - RABBIT_HOST=rabbit
         - RABBIT_LOGIN=guest
         - RABBIT_PASSWORD=guest
+      depends_on:
+        - rabbit
   shop:
       build:
         context: ./src
@@ -44,6 +46,10 @@ services:
         - PrefetchCount=100
         - ConnectionStrings__POSTGRES=User ID=postgres;Password=password;Server=postgres;Port=5432;Database=shop;Integrated Security=true;
         - ConnectionStrings__MongoDb=mongodb://root:myPassword1@mongodb:27017
+      depends_on:
+        - postgres  
+        - mongodb
+        - rabbit
   stock:
     build:
       context: ./src
@@ -54,5 +60,8 @@ services:
       - RABBIT_PASSWORD=guest
       - PrefetchCount=100
       - ConnectionStrings__POSTGRES=User ID=postgres;Password=password;Server=postgres;Port=5432;Database=stock;Integrated Security=true;
+    depends_on:
+      - postgres
+      - rabbit
 volumes:
- mongodb-data:
+  mongodb-data:

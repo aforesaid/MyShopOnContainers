@@ -10,7 +10,7 @@ public class OrderStockStatusActivity
 : IExecuteActivity<OrderStockStatusActivityArguments>
 
 {
-    public static readonly Uri ExecuteAddress = new("queue:order-stock-status_execute");
+    public static readonly Uri ExecuteAddress = new("queue:OrderStockStatus_execute");
 
     private readonly IMediator _mediator;
     private readonly IStockProvider _stockProvider;

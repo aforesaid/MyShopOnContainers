@@ -26,7 +26,7 @@ public static class StockConfiguration
     {
         serviceCollection.AddMassTransit(x =>
         {
-            x.AddConsumersFromNamespaceContaining<StockGetProductListConsumer>();
+            x.AddConsumers(typeof(StockConfiguration).Assembly);
             
             x.UsingRabbitMq((context, cfg) =>
             {
