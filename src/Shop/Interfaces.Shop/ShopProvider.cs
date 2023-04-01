@@ -19,4 +19,11 @@ public class ShopProvider : IShopProvider
             timeout: timeOut ?? RequestTimeout.Default);
         return response.Message;
     }
+
+    public async Task<ShopCreateOrderResponse> CreateOrder(ShopCreateOrderRequest request, TimeSpan? timeOut = null)
+    {
+        var response = await _getOrdersClient.GetResponse<ShopCreateOrderResponse>(request, 
+            timeout: timeOut ?? RequestTimeout.Default);
+        return response.Message;
+    }
 }

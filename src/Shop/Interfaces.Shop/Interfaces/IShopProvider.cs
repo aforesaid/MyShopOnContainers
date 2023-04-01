@@ -5,4 +5,5 @@ namespace Interfaces.Shop.Interfaces;
 public interface IShopProvider
 {
     Task<ShopGetOrdersResponse> GetOrders(ShopGetOrdersRequest request, TimeSpan? timeOut = null);
+    Task<ShopCreateOrderResponse> CreateOrder(ShopCreateOrderRequest request, TimeSpan? timeOut = null);
 }
