@@ -26,6 +26,8 @@ public static class StockConfiguration
     {
         serviceCollection.AddMassTransit(x =>
         {
+            x.SetKebabCaseEndpointNameFormatter();
+
             x.AddConsumers(typeof(StockConfiguration).Assembly);
             
             x.UsingRabbitMq((context, cfg) =>

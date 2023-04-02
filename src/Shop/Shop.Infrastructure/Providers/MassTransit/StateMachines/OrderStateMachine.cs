@@ -43,14 +43,17 @@ public class OrderStateMachine
                         OrderStatesEnum.Created);
                     await mediator.Send(setOrderStateRequest);
                 })
-                .Send(context => new ShopReserveProductForOrderCommand(context.Message.OrderId))
-                .Send(context => new OrderCreated(context.Message.UserId,
-                    context.Message.OrderId, 
-                    context.Message.ProductId,
-                    context.Message.Quantity))
+                .ThenAsync(async context =>
+                {
+                    var bus = context.GetServiceOrCreateInstance<IBus>();
+                    var sendEndpoint = await bus.GetPublishSendEndpoint<ShopReserveProductForOrderCommand>();
+
+                    var sendRequest = new ShopReserveProductForOrderCommand(context.Message.OrderId);
+                    await sendEndpoint.Send(sendRequest);
+                })
                 .TransitionTo(Created));
-        
-        During(Accepted,
+
+        During(Created,
             When(OrderAccepted)
                 .ThenAsync(async context =>
                 {
@@ -59,9 +62,9 @@ public class OrderStateMachine
                         OrderStatesEnum.Accepted);
                     await mediator.Send(setOrderStateRequest);
                 })
-                .Send(context => new OrderAccepted(context.Message.OrderId))
-                .TransitionTo(Accepted)
-            );
+                .TransitionTo(Accepted),
+            When(OrderFaulted)
+                .TransitionTo(Faulted));
         
         During(Accepted,
             When(StockReserved)

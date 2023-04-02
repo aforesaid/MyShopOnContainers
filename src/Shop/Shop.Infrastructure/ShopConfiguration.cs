@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shop.Infrastructure.Database;
+using Shop.Infrastructure.Providers.MassTransit;
 using Shop.Infrastructure.Providers.MassTransit.StateMachines;
 
 namespace Shop.Infrastructure;
@@ -25,8 +26,12 @@ public static class ShopConfiguration
 
     private static IServiceCollection AddMassTransit(IServiceCollection serviceCollection, IConfiguration configuration)
     {
+        serviceCollection.AddScoped<IEndpointAddressProvider, RabbitMqEndpointAddressProvider>();
+        
         serviceCollection.AddMassTransit(x =>
         {
+            x.SetKebabCaseEndpointNameFormatter();
+
             const string ordersDatabase = "orders";
             x.AddConsumers(typeof(ShopConfiguration).Assembly);
             x.AddActivities(typeof(ShopConfiguration).Assembly);

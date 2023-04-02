@@ -20,7 +20,7 @@ public class ShopGetOrdersConsumer : IConsumer<ShopGetOrdersRequest>
     {
         var request = context.Message;
 
-        var mediatrRequest = new GetOrdersRequest(request.UserIds);
+        var mediatrRequest = new GetOrdersRequest(userIds: request.UserIds);
         var mediatrResponse = await _mediator.Send(mediatrRequest);
 
         var result = new ShopGetOrdersResponse(mediatrResponse.Orders
