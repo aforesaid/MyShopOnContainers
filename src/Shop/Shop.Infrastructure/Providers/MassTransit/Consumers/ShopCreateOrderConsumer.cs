@@ -1,3 +1,4 @@
+using Interfaces.Shop.Events;
 using Interfaces.Shop.Requests;
 using MassTransit;
 using MediatR;
@@ -25,6 +26,12 @@ public class ShopCreateOrderConsumer : IConsumer<ShopCreateOrderRequest>
 
         var orderId = mediatrResponse.OrderId;
         var response = new ShopCreateOrderResponse(orderId);
+
+        await context.Publish(new OrderCreated(request.UserId,
+            orderId,
+            request.ProductId,
+            request.Quantity));
+        
         await context.RespondAsync(response);
     }
 }

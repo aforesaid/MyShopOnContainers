@@ -21,7 +21,7 @@ public class ShopController : ControllerBase
     {
         try
         {
-            var getOrdersRequest = new ShopGetOrdersRequest(new[] { userId });
+            var getOrdersRequest = new ShopGetOrdersRequest(userIds: new[] { userId });
             var getOrdersResponse = await _shopProvider.GetOrders(getOrdersRequest);
 
             return Ok(getOrdersResponse);

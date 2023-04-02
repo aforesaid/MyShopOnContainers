@@ -8,8 +8,6 @@ namespace Shop.Infrastructure.Providers.MassTransit.CouriersActivities;
 public class OrderAcceptActivity
 : IExecuteActivity<OrderAcceptActivityArguments>
 {
-    public static readonly Uri ExecuteAddress = new("queue:OrderAccept_execute");
-
     private readonly IMediator _mediator;
 
     private readonly ISendEndpoint _sendEndpoint;
@@ -33,5 +31,14 @@ public class OrderAcceptActivity
         await _sendEndpoint.Send(stockReserveProductCommand);
 
         return context.Completed();
+    }
+}
+
+public class OrderAcceptActivityDefinition :
+    ExecuteActivityDefinition<OrderAcceptActivity, OrderAcceptActivityArguments>
+{
+    public OrderAcceptActivityDefinition()
+    {
+        ConcurrentMessageLimit = 20;
     }
 }

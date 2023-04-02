@@ -18,6 +18,8 @@ public static class WebConfiguration
         
         serviceCollection.AddMassTransit(x =>
         {
+            x.SetKebabCaseEndpointNameFormatter();
+
             x.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host(configuration["RABBIT_HOST"], "/", h =>

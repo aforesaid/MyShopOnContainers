@@ -10,8 +10,6 @@ public class OrderStockStatusActivity
 : IExecuteActivity<OrderStockStatusActivityArguments>
 
 {
-    public static readonly Uri ExecuteAddress = new("queue:OrderStockStatus_execute");
-
     private readonly IMediator _mediator;
     private readonly IStockProvider _stockProvider;
 
@@ -45,5 +43,14 @@ public class OrderStockStatusActivity
         }
         
         return context.Completed();
+    }
+}
+
+public class OrderStockStatusActivityDefinition :
+    ExecuteActivityDefinition<OrderStockStatusActivity, OrderStockStatusActivityArguments>
+{
+    public OrderStockStatusActivityDefinition()
+    {
+        ConcurrentMessageLimit = 20;
     }
 }
