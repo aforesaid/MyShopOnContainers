@@ -46,11 +46,46 @@ Web API служит шлюзом для пользовательского вз
 4. Действие с заказом, если есть возможность (Shop/ReleaseOrder, Shop/CancelOrder)
 5. Просмотр заказа (Shop/GetOrders)
 
+##### Конфигурация
+
+Файл конфигурации - ```appsettings.json```.
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft.AspNetCore": "Warning"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "Console",
+        "Args": {
+          "restrictedToMinimumLevel": "Debug"
+        }
+      }
+    ],
+    "Enrich": ["FromLogContext"]
+  },
+  "AllowedHosts": "*",
+  
+  "RABBIT_HOST": "localhost",
+  "RABBIT_LOGIN": "guest",
+  "RABBIT_PASSWORD": "guest"
+}
+```
+
 Данный сервис представляет из себя ASP .NET Web API приложение, в котором имеется 2 контроллера.
 
 ##### ShopController
-
-Функционал: 
 
 1. Просмотреть список заказов для пользователя. (GetOrders) ```GET```
 
