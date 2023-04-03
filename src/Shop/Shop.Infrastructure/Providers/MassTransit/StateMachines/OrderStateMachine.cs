@@ -1,11 +1,10 @@
-using Interfaces.Shop.Commands;
 using Interfaces.Shop.Events;
 using Interfaces.Stock.Events;
 using Interfaces.Stock.Messages;
 using MassTransit;
 using MediatR;
 using Shop.Domain.Enums;
-using Shop.Infrastructure.Providers.MassTransit.Consumers;
+using Shop.Infrastructure.Providers.MassTransit.StateMachines.OrderStateMachineActivities;
 using Shop.MediatR.Contracts.Requests;
 
 namespace Shop.Infrastructure.Providers.MassTransit.StateMachines;
@@ -35,22 +34,9 @@ public class OrderStateMachine
         Event(() => OrderReleaseStockStarted,
             x => x.CorrelateById(m => m.Message.OrderId));
         
-        Initially(
-            When(OrderCreated)
+        Initially(When(OrderCreated)
                 .TransitionTo(Created)
-                .ThenAsync(async context =>
-                {
-                    var endpointNameConfiguration = context.GetServiceOrCreateInstance<IEndpointAddressProvider>();
-                    var consumerEndpoint = endpointNameConfiguration
-                        .GetConsumerEndpoint<ShopReserveProductForOrderConsumer, ShopReserveProductForOrderCommand>();
-                    
-                    var sendRequest = new ShopReserveProductForOrderCommand(context.Message.OrderId);
-
-                    var consumeContext = context.GetPayload<ConsumeContext>();
-                    var sendEndpoint = await consumeContext.GetSendEndpoint(consumerEndpoint);
-                    
-                    await sendEndpoint.Send(sendRequest);
-                }));
+                .Activity(x => x.OfType<AcceptOrderActivity>()));
 
         During(Created,
             When(StockReserved)
@@ -80,46 +66,25 @@ public class OrderStateMachine
                     await mediator.Send(setOrderStateRequest);
                 })
                 .TransitionTo(Faulted);
-        
-        During(Reserved,
-            When(OrderFaulted)
-                .ThenAsync(async context =>
-                {
-                    var mediator = context.GetServiceOrCreateInstance<IMediator>();
-                    var setOrderStateRequest = new SetOrderStateRequest(context.Message.OrderId,
-                        OrderStatesEnum.Rejected);
-                    await mediator.Send(setOrderStateRequest);
-                })
-                .TransitionTo(Faulted),
-            When(OrderCancellationStarted)
-                .TransitionTo(CancelProcessing)
-                .ThenAsync(async context =>
-                {
-                    var endpointNameConfiguration = context.GetServiceOrCreateInstance<IEndpointAddressProvider>();
-                    var consumerEndpoint = endpointNameConfiguration
-                        .GetConsumerEndpoint<ShopCancelOrderConsumer, ShopCancelOrderCommand>();
-                    
-                    var sendEndpoint = await context.GetSendEndpoint(consumerEndpoint);
 
-                    var sendRequest = new ShopCancelOrderCommand(context.Message.OrderId);
-                    await sendEndpoint.Send(sendRequest);
-                }),
-            
-            When(OrderReleaseStockStarted)
-                .TransitionTo(ReleaseProcessing)
-                .ThenAsync(async context =>
-                {
-                    var endpointNameConfiguration = context.GetServiceOrCreateInstance<IEndpointAddressProvider>();
-                    var consumerEndpoint = endpointNameConfiguration
-                        .GetConsumerEndpoint<ShopReleaseProductForOrderConsumer, ShopReleaseProductForOrderCommand>();
-                    
-                    var sendEndpoint = await context.GetSendEndpoint(consumerEndpoint);
+            During(Reserved,
+                When(OrderFaulted)
+                    .ThenAsync(async context =>
+                    {
+                        var mediator = context.GetServiceOrCreateInstance<IMediator>();
+                        var setOrderStateRequest = new SetOrderStateRequest(context.Message.OrderId,
+                            OrderStatesEnum.Rejected);
+                        await mediator.Send(setOrderStateRequest);
+                    })
+                    .TransitionTo(Faulted),
+                When(OrderCancellationStarted)
+                    .TransitionTo(CancelProcessing)
+                    .Activity(x => x.OfType<CancelOrderActivity>()),
+                When(OrderReleaseStockStarted)
+                    .TransitionTo(ReleaseProcessing)
+                    .Activity(x => x.OfType<ReleaseOrderActivity>()));
 
-                    var sendRequest = new ShopReleaseProductForOrderCommand(context.Message.OrderId);
-                    await sendEndpoint.Send(sendRequest);
-                }));
-
-        During(ReleaseProcessing,
+            During(ReleaseProcessing,
             When(StockReleased)
                 .ThenAsync(async context =>
                 {
