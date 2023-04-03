@@ -22,6 +22,6 @@ public class AddProductRequestHandler : IRequestHandler<AddProductRequest, AddPr
         await _stockDbContext.AddAsync(productEntity, cancellationToken);
         await _stockDbContext.SaveChangesAsync(cancellationToken);
 
-        return new AddProductResponse(success: true);
+        return new AddProductResponse(productId: productEntity.Id);
     }
 }
