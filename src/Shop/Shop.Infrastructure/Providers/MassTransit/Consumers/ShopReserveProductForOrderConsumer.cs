@@ -8,7 +8,7 @@ namespace Shop.Infrastructure.Providers.MassTransit.Consumers;
 
 public class ShopReserveProductForOrderConsumer : IConsumer<ShopReserveProductForOrderCommand>
 {
-    readonly IEndpointAddressProvider _provider;
+    private readonly IEndpointAddressProvider _provider;
 
     public ShopReserveProductForOrderConsumer(IEndpointAddressProvider provider)
     {
@@ -21,21 +21,20 @@ public class ShopReserveProductForOrderConsumer : IConsumer<ShopReserveProductFo
         
         var builder = new RoutingSlipBuilder(NewId.NextGuid());
         
-        builder.AddActivity("OrderStockStatus", _provider.GetExecuteEndpoint<OrderStockStatusActivity, OrderStockStatusActivityArguments>(),
+        builder.AddActivity(nameof(OrderStockStatusActivity), _provider.GetExecuteEndpoint<OrderStockStatusActivity, OrderStockStatusActivityArguments>(),
             new OrderStockStatusActivityArguments(orderId: request.OrderId));
         
-        builder.AddActivity("OrderAccept", _provider.GetExecuteEndpoint<OrderAcceptActivity, OrderAcceptActivityArguments>(),
+        builder.AddActivity(nameof(OrderAcceptActivity), _provider.GetExecuteEndpoint<OrderAcceptActivity, OrderAcceptActivityArguments>(),
             new OrderAcceptActivityArguments(orderId: request.OrderId));
         
         await builder.AddSubscription(context.SourceAddress,
             RoutingSlipEvents.Faulted | RoutingSlipEvents.Supplemental,
-            RoutingSlipEventContents.None, 
+            RoutingSlipEventContents.None,
             x => x.Send(new OrderFaulted(request.OrderId)));
 
         await builder.AddSubscription(context.SourceAddress,
             RoutingSlipEvents.Completed | RoutingSlipEvents.Supplemental,
             RoutingSlipEventContents.None,
-            nameof(OrderAcceptActivity),
             x => x.Send(new OrderAccepted(request.OrderId)));
 
         var routingSlip = builder.Build();

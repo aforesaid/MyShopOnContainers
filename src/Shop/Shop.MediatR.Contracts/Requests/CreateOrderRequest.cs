@@ -7,7 +7,8 @@ public class CreateOrderRequest : IRequest<CreateOrderResponse>
     public CreateOrderRequest()
     { }
 
-    public CreateOrderRequest(Guid userId,
+    public CreateOrderRequest(
+        Guid userId,
         Guid productId, 
         int quantity)
     {

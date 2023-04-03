@@ -9,5 +9,7 @@ public class OrderStockStatusActivityArguments
     {
         OrderId = orderId;
     }
+
     public Guid OrderId { get; set; }
+
 }

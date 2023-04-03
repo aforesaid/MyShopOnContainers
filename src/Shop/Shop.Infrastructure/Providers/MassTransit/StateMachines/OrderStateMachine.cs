@@ -5,6 +5,7 @@ using Interfaces.Stock.Messages;
 using MassTransit;
 using MediatR;
 using Shop.Domain.Enums;
+using Shop.Infrastructure.Providers.MassTransit.Consumers;
 using Shop.MediatR.Contracts.Requests;
 
 namespace Shop.Infrastructure.Providers.MassTransit.StateMachines;
@@ -36,19 +37,15 @@ public class OrderStateMachine
             When(OrderCreated)
                 .ThenAsync(async context =>
                 {
-                    context.Saga.Updated = DateTime.UtcNow;
-
-                    var mediator = context.GetServiceOrCreateInstance<IMediator>();
-                    var setOrderStateRequest = new SetOrderStateRequest(context.Message.OrderId,
-                        OrderStatesEnum.Created);
-                    await mediator.Send(setOrderStateRequest);
-                })
-                .ThenAsync(async context =>
-                {
-                    var bus = context.GetServiceOrCreateInstance<IBus>();
-                    var sendEndpoint = await bus.GetPublishSendEndpoint<ShopReserveProductForOrderCommand>();
-
+                    var endpointNameConfiguration = context.GetServiceOrCreateInstance<IEndpointAddressProvider>();
+                    var consumerEndpoint = endpointNameConfiguration
+                        .GetConsumerEndpoint<ShopReserveProductForOrderConsumer, ShopReserveProductForOrderCommand>();
+                    
                     var sendRequest = new ShopReserveProductForOrderCommand(context.Message.OrderId);
+
+                    var consumeContext = context.GetPayload<ConsumeContext>();
+                    var sendEndpoint = await consumeContext.GetSendEndpoint(consumerEndpoint);
+                    
                     await sendEndpoint.Send(sendRequest);
                 })
                 .TransitionTo(Created));
@@ -64,8 +61,15 @@ public class OrderStateMachine
                 })
                 .TransitionTo(Accepted),
             When(OrderFaulted)
+                .ThenAsync(async context =>
+                {
+                    var mediator = context.GetServiceOrCreateInstance<IMediator>();
+                    var setOrderStateRequest = new SetOrderStateRequest(context.Message.OrderId,
+                        OrderStatesEnum.Rejected);
+                    await mediator.Send(setOrderStateRequest);
+                })
                 .TransitionTo(Faulted));
-        
+    
         During(Accepted,
             When(StockReserved)
                 .ThenAsync(async context =>
@@ -84,11 +88,17 @@ public class OrderStateMachine
                         OrderStatesEnum.Rejected);
                     await mediator.Send(setOrderStateRequest);
                 })
-                .Send(context => new OrderFaulted(context.Message.OrderId))
                 .TransitionTo(Faulted));
         
         During(Reserved,
             When(OrderFaulted)
+                .ThenAsync(async context =>
+                {
+                    var mediator = context.GetServiceOrCreateInstance<IMediator>();
+                    var setOrderStateRequest = new SetOrderStateRequest(context.Message.OrderId,
+                        OrderStatesEnum.Rejected);
+                    await mediator.Send(setOrderStateRequest);
+                })
                 .TransitionTo(Faulted),
             When(ReserveCancelled)
                 .ThenAsync(async context =>
@@ -98,7 +108,6 @@ public class OrderStateMachine
                         OrderStatesEnum.Canceled);
                     await mediator.Send(setOrderStateRequest);
                 })
-                .Send(context => new OrderCancelled(context.Message.OrderId))
                 .TransitionTo(Canceled),
             When(StockReleased)
                 .ThenAsync(async context =>
@@ -108,7 +117,6 @@ public class OrderStateMachine
                         OrderStatesEnum.Completed);
                     await mediator.Send(setOrderStateRequest);
                 })
-                .Send(context => new OrderCompleted(context.Message.OrderId))
                 .TransitionTo(Completed));
     }
     
@@ -116,8 +124,6 @@ public class OrderStateMachine
     public State Accepted { get; set; }
     public State Reserved { get; set; }
     public State Completed { get; set; }
-    
-    public State PreCanceled { get; set; }
     public State Canceled { get; set; }
     public State Faulted { get; set; }
     

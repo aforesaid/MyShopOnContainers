@@ -1,7 +1,7 @@
 namespace Shop.Infrastructure.Providers.MassTransit.CouriersActivities;
 
 public class OrderAcceptActivityArguments
-{
+{ 
     public OrderAcceptActivityArguments()
     { }
 

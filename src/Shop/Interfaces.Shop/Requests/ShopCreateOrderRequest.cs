@@ -27,7 +27,17 @@ public class ShopCreateOrderResponse
     public ShopCreateOrderResponse(Guid orderId)
     {
         OrderId = orderId;
+        Success = true;
+    }
+
+    public ShopCreateOrderResponse(bool success,
+        string errorReason)
+    {
+        Success = success;
+        ErrorReason = errorReason;
     }
     
-    public Guid OrderId { get; set; }
+    public Guid? OrderId { get; set; }
+    public bool Success { get; set; }
+    public string ErrorReason { get; set; }
 }
