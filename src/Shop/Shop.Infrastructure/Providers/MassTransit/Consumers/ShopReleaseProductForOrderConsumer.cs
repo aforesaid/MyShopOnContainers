@@ -9,13 +9,13 @@ namespace Shop.Infrastructure.Providers.MassTransit.Consumers;
 public class ShopReleaseProductForOrderConsumer : IConsumer<ShopReleaseProductForOrderCommand>
 {
     private readonly IMediator _mediator;
-    private readonly ISendEndpoint _sendEndpoint;
+    private readonly IBusControl _busControl;
 
-    public ShopReleaseProductForOrderConsumer(IMediator mediator, 
-        ISendEndpoint sendEndpoint)
+    public ShopReleaseProductForOrderConsumer(IMediator mediator,
+        IBusControl busControl)
     {
         _mediator = mediator;
-        _sendEndpoint = sendEndpoint;
+        _busControl = busControl;
     }
 
     public async Task Consume(ConsumeContext<ShopReleaseProductForOrderCommand> context)
@@ -28,6 +28,8 @@ public class ShopReleaseProductForOrderConsumer : IConsumer<ShopReleaseProductFo
         var stockReleaseProductCommand = new StockReleaseProductCommand(orderInfo.OrderId,
             orderInfo.ProductId,
             orderInfo.Quantity);
-        await _sendEndpoint.Send(stockReleaseProductCommand);
+
+        var sendEndpoint = await _busControl.GetPublishSendEndpoint<StockReleaseProductCommand>();
+        await sendEndpoint.Send(stockReleaseProductCommand);
     }
 }

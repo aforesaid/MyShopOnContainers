@@ -1,11 +1,11 @@
 namespace Shop.Infrastructure.Providers.MassTransit.CouriersActivities;
 
-public class OrderAcceptActivityArguments
+public class OrderReserveProductActivityArguments
 { 
-    public OrderAcceptActivityArguments()
+    public OrderReserveProductActivityArguments()
     { }
 
-    public OrderAcceptActivityArguments(Guid orderId)
+    public OrderReserveProductActivityArguments(Guid orderId)
     {
         OrderId = orderId;
     }

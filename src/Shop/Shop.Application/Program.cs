@@ -41,7 +41,6 @@ var host = new WebHostBuilder()
     {
         MigrateDbContext<ShopDbContext>(configuration.ApplicationServices);
     })
-    .UseUrls("http://localhost:5100")
     .Build();
 
 await host.RunAsync();

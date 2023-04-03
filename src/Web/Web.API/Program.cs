@@ -1,7 +1,18 @@
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Linq;
+using Serilog;
 using Web.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((host, logger) =>
+{
+    logger.ReadFrom.Configuration(host.Configuration)
+        .Destructure.AsScalar<JObject>()
+        .Destructure.AsScalar<JArray>()
+        .Enrich.FromLogContext();
+});
+
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddControllers();
 

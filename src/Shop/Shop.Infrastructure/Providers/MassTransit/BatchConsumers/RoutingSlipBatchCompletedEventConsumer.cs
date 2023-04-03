@@ -4,13 +4,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Shop.Infrastructure.Providers.MassTransit.BatchConsumers;
 
-public class RoutingSlipBatchEventConsumer
+public class RoutingSlipBatchCompletedEventConsumer
     : IConsumer<Batch<RoutingSlipCompleted>>
 
 {
-    private readonly ILogger<RoutingSlipBatchEventConsumer> _logger;
+    private readonly ILogger<RoutingSlipBatchCompletedEventConsumer> _logger;
 
-    public RoutingSlipBatchEventConsumer(ILogger<RoutingSlipBatchEventConsumer> logger)
+    public RoutingSlipBatchCompletedEventConsumer(ILogger<RoutingSlipBatchCompletedEventConsumer> logger)
     {
         _logger = logger;
     }
@@ -24,7 +24,7 @@ public class RoutingSlipBatchEventConsumer
 }
 
 public class RoutingSlipBatchEventConsumerDefinition :
-    ConsumerDefinition<RoutingSlipBatchEventConsumer>
+    ConsumerDefinition<RoutingSlipBatchCompletedEventConsumer>
 {
     public RoutingSlipBatchEventConsumerDefinition()
     {
@@ -32,7 +32,7 @@ public class RoutingSlipBatchEventConsumerDefinition :
     }
 
     protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator,
-        IConsumerConfigurator<RoutingSlipBatchEventConsumer> consumerConfigurator)
+        IConsumerConfigurator<RoutingSlipBatchCompletedEventConsumer> consumerConfigurator)
     {
         consumerConfigurator.Options<BatchOptions>(o => o.SetMessageLimit(10).SetTimeLimit(100));
     }

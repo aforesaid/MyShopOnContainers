@@ -24,18 +24,13 @@ public class ShopReserveProductForOrderConsumer : IConsumer<ShopReserveProductFo
         builder.AddActivity(nameof(OrderStockStatusActivity), _provider.GetExecuteEndpoint<OrderStockStatusActivity, OrderStockStatusActivityArguments>(),
             new OrderStockStatusActivityArguments(orderId: request.OrderId));
         
-        builder.AddActivity(nameof(OrderAcceptActivity), _provider.GetExecuteEndpoint<OrderAcceptActivity, OrderAcceptActivityArguments>(),
-            new OrderAcceptActivityArguments(orderId: request.OrderId));
+        builder.AddActivity(nameof(OrderReserveProductActivity), _provider.GetExecuteEndpoint<OrderReserveProductActivity, OrderReserveProductActivityArguments>(),
+            new OrderReserveProductActivityArguments(orderId: request.OrderId));
         
         await builder.AddSubscription(context.SourceAddress,
             RoutingSlipEvents.Faulted | RoutingSlipEvents.Supplemental,
             RoutingSlipEventContents.None,
             x => x.Send(new OrderFaulted(request.OrderId)));
-
-        await builder.AddSubscription(context.SourceAddress,
-            RoutingSlipEvents.Completed | RoutingSlipEvents.Supplemental,
-            RoutingSlipEventContents.None,
-            x => x.Send(new OrderAccepted(request.OrderId)));
 
         var routingSlip = builder.Build();
 
