@@ -9,6 +9,7 @@
 * MassTransit 8.0 (RabbitMQ) [Saga StateMachine](https://masstransit.io/documentation/patterns/saga/state-machine), [CourierActivities](https://masstransit.io/documentation/patterns/routing-slip)
 * [EntityFramework Core 7.0 (PostgreSQL)](https://learn.microsoft.com/en-us/ef/core/get-started/overview/first-app?tabs=netcore-cli)
 * [MediatR 12.0](https://github.com/jbogard/MediatR)
+* [Serilog](https://github.com/serilog/serilog)
 * [Docker](https://www.docker.com/)
 
 ## Patterns
