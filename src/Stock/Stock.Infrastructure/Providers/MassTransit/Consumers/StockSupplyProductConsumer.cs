@@ -29,11 +29,11 @@ public class StockSupplyProductConsumer : IConsumer<StockSupplyProductRequest>
         {
             var message = new StockNewSupply(request.ProductId,
                 request.Quantity);
-            await _publishEndpoint.Publish<StockNewSupply>(message);
+            await _publishEndpoint.Publish(message);
         }
 
         var response = new StockSupplyProductResponse(success: mediatrResponse);
-        await context.RespondAsync<StockSupplyProductResponse>(response);
+        await context.RespondAsync(response);
     }
 }
 

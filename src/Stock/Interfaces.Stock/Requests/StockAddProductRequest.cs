@@ -20,9 +20,9 @@ public class StockAddProductResponse
     public StockAddProductResponse()
     { }
 
-    public StockAddProductResponse(bool success)
+    public StockAddProductResponse(Guid productId)
     {
-        Success = success;
+        ProductId = productId;
     }
-    public bool Success { get; set; }
+    public Guid ProductId { get; set; }
 }
