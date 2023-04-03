@@ -172,7 +172,13 @@ Faulted - 100 (ошибка заказа)
 
 ### Docker
 
+Данный проект поддерживает docker.
+
+Для его запуска достаточно прописать:
+
 ```
 docker-compose build
 docker-compose up
 ```
+
+Детали конфигурации docker-compose вы можете найти [здесь](https://github.com/bezlla/MyShopOnContainers/blob/dev/docker-compose.yml).
