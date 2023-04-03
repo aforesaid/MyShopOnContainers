@@ -1,5 +1,5 @@
 # MyShopOnContainers
-
+![Схема](https://github.com/bezlla/MyShopOnContainers/blob/dev/Scheme.jpg)
 ## Build
 
 ```
