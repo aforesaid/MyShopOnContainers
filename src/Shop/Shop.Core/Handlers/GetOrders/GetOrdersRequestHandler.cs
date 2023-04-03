@@ -31,6 +31,7 @@ public class GetOrdersRequestHandler : IRequestHandler<GetOrdersRequest, GetOrde
         }
         
         var orders = await q.AsNoTracking()
+            .OrderByDescending(x => x.Updated)
             .Select(x => new OrderInfo(x.UserId,
                 x.Id,
                 x.ProductId,

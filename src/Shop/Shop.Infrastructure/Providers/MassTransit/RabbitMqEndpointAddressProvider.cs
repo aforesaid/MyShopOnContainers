@@ -18,4 +18,11 @@ public class RabbitMqEndpointAddressProvider :
     {
         return new Uri($"exchange:{_formatter.ExecuteActivity<T, TArguments>()}");
     }
+
+    public Uri GetConsumerEndpoint<T, TArguments>()
+        where T : class, IConsumer<TArguments>
+        where TArguments : class
+    {
+        return new Uri($"queue:{_formatter.Consumer<T>()}");
+    }
 }

@@ -11,9 +11,9 @@ public class OrderEntity : BaseEntity
     {
         UserId = userId;
         ProductId = productId;
-        Quantity = quantity;
+        Quantity = quantity < 1 ? throw new ArgumentException("Quantity can't be less then 1") : quantity;
         
-        State = OrderStatesEnum.None;
+        State = OrderStatesEnum.Created;
     }
     
     public Guid UserId { get; private set; }

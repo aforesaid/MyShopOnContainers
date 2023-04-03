@@ -19,20 +19,27 @@ public class ShopCreateOrderConsumer : IConsumer<ShopCreateOrderRequest>
     {
         var request = context.Message;
 
-        var mediatrRequest = new CreateOrderRequest(request.UserId,
-            request.ProductId,
-            request.Quantity);
-        var mediatrResponse = await _mediator.Send(mediatrRequest);
-
-        var orderId = mediatrResponse.OrderId;
-        var response = new ShopCreateOrderResponse(orderId);
-
-        await context.Publish(new OrderCreated(request.UserId,
-            orderId,
-            request.ProductId,
-            request.Quantity));
+        try
+        {
+            var mediatrRequest = new CreateOrderRequest(request.UserId,
+                request.ProductId,
+                request.Quantity);
         
-        await context.RespondAsync(response);
+            var mediatrResponse = await _mediator.Send(mediatrRequest);
+        
+            var orderId = mediatrResponse.OrderId;
+            var response = new ShopCreateOrderResponse(orderId);
+            
+            await context.Publish(new OrderCreated(orderId));
+            await context.RespondAsync(response);
+
+        }
+        catch (Exception e)
+        {
+            var response = new ShopCreateOrderResponse(success: false,
+                errorReason: e.InnerException?.Message ?? e.Message);
+            await context.RespondAsync(response);
+        }
     }
 }
 

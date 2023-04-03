@@ -10,13 +10,14 @@ public class OrderStockStatusActivity
 : IExecuteActivity<OrderStockStatusActivityArguments>
 
 {
-    private readonly IMediator _mediator;
     private readonly IStockProvider _stockProvider;
+    private readonly IMediator _mediator;
 
-    public OrderStockStatusActivity(IMediator mediator, IStockProvider stockProvider)
+    public OrderStockStatusActivity(IStockProvider stockProvider,
+        IMediator mediator)
     {
-        _mediator = mediator;
         _stockProvider = stockProvider;
+        _mediator = mediator;
     }
 
     public async Task<ExecutionResult> Execute(ExecuteContext<OrderStockStatusActivityArguments> context)
@@ -26,15 +27,13 @@ public class OrderStockStatusActivity
 
         var orderInfo = mediatrResponse.Orders.First();
 
-        var targetProductId = orderInfo.ProductId;
-
-        var getStockProductInfoRequest = new StockGetProductListRequest(new[] { targetProductId });
+        var getStockProductInfoRequest = new StockGetProductListRequest(new[] { orderInfo.ProductId });
         var getStockProductInfoResponse = await _stockProvider.GetProductList(getStockProductInfoRequest);
 
         var stockProductInfo = getStockProductInfoResponse.Products.FirstOrDefault();
         if (stockProductInfo == null)
         {
-            throw new ArgumentException($"Not found product {targetProductId}");
+            throw new ArgumentException($"Not found product {orderInfo.ProductId}");
         }
 
         if (stockProductInfo.Free < orderInfo.Quantity)

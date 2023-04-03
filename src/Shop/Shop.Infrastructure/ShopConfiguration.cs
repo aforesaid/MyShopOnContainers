@@ -1,4 +1,6 @@
-﻿using MassTransit;
+﻿using Interfaces.Stock;
+using Interfaces.Stock.Interfaces;
+using MassTransit;
 using MassTransit.MongoDbIntegration.MessageData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +28,7 @@ public static class ShopConfiguration
 
     private static IServiceCollection AddMassTransit(IServiceCollection serviceCollection, IConfiguration configuration)
     {
+        serviceCollection.AddScoped<IStockProvider, StockProvider>();
         serviceCollection.AddScoped<IEndpointAddressProvider, RabbitMqEndpointAddressProvider>();
         
         serviceCollection.AddMassTransit(x =>

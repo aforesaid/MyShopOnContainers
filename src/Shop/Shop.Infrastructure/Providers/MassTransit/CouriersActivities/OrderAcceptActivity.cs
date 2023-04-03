@@ -9,10 +9,9 @@ public class OrderAcceptActivity
 : IExecuteActivity<OrderAcceptActivityArguments>
 {
     private readonly IMediator _mediator;
-
     private readonly ISendEndpoint _sendEndpoint;
 
-    public OrderAcceptActivity(IMediator mediator, 
+    public OrderAcceptActivity(IMediator mediator,
         ISendEndpoint sendEndpoint)
     {
         _mediator = mediator;
