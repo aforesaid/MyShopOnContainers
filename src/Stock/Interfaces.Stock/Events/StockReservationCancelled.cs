@@ -1,11 +1,11 @@
 namespace Interfaces.Stock.Events;
 
-public class StockReserveCancelled
+public class StockReservationCancelled
 {
-    public StockReserveCancelled()
+    public StockReservationCancelled()
     { }
 
-    public StockReserveCancelled(Guid orderId, 
+    public StockReservationCancelled(Guid orderId, 
         Guid productId,
         int quantity)
     {

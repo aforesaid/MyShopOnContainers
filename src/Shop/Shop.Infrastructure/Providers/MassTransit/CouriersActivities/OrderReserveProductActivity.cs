@@ -5,36 +5,39 @@ using Shop.MediatR.Contracts.Requests;
 
 namespace Shop.Infrastructure.Providers.MassTransit.CouriersActivities;
 
-public class OrderAcceptActivity
-: IExecuteActivity<OrderAcceptActivityArguments>
+public class OrderReserveProductActivity
+: IExecuteActivity<OrderReserveProductActivityArguments>
 {
     private readonly IMediator _mediator;
-    private readonly ISendEndpoint _sendEndpoint;
+    private readonly IBusControl _busControl;
 
-    public OrderAcceptActivity(IMediator mediator,
-        ISendEndpoint sendEndpoint)
+    public OrderReserveProductActivity(IMediator mediator,
+        IBusControl busControl)
     {
         _mediator = mediator;
-        _sendEndpoint = sendEndpoint;
+        _busControl = busControl;
     }
 
-    public async Task<ExecutionResult> Execute(ExecuteContext<OrderAcceptActivityArguments> context)
+    public async Task<ExecutionResult> Execute(ExecuteContext<OrderReserveProductActivityArguments> context)
     {
         var mediatrRequest = new GetOrdersRequest(orderIds: new[] { context.Arguments.OrderId });
         var mediatrResponse = await _mediator.Send(mediatrRequest);
 
         var orderInfo = mediatrResponse.Orders.First();
+
+        var sendEndpoint = await _busControl.GetPublishSendEndpoint<StockReserveProductCommand>();
+        
         var stockReserveProductCommand = new StockReserveProductCommand(orderInfo.OrderId,
             orderInfo.ProductId,
             orderInfo.Quantity);
-        await _sendEndpoint.Send(stockReserveProductCommand);
+        await sendEndpoint.Send(stockReserveProductCommand);
 
         return context.Completed();
     }
 }
 
 public class OrderAcceptActivityDefinition :
-    ExecuteActivityDefinition<OrderAcceptActivity, OrderAcceptActivityArguments>
+    ExecuteActivityDefinition<OrderReserveProductActivity, OrderReserveProductActivityArguments>
 {
     public OrderAcceptActivityDefinition()
     {

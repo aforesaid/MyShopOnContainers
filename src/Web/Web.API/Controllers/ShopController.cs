@@ -48,4 +48,34 @@ public class ShopController : ControllerBase
             return BadRequest(e);
         }
     }
+
+    [HttpPut]
+    public async Task<IActionResult> ReleaseOrder([FromQuery] Guid orderId)
+    {
+        try
+        {
+            await _shopProvider.ReleaseOrder(orderId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Can't release order");
+            return BadRequest(e);
+        }
+    }
+    
+    [HttpPut]
+    public async Task<IActionResult> CancelOrder([FromQuery] Guid orderId)
+    {
+        try
+        {
+            await _shopProvider.CancelOrder(orderId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Can't release order");
+            return BadRequest(e);
+        }
+    }
 }

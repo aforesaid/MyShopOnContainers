@@ -28,7 +28,7 @@ public class GetProductListRequestHandler : IRequestHandler<GetProductListReques
         var products = await q.AsNoTracking()
             .Select(x => new ProductInfo(x.Id,
                 x.Name,
-                x.Available - x.Reserved))
+                x.Available))
             .ToListAsync(cancellationToken: cancellationToken);
 
         var result = new GetProductListResponse(products);

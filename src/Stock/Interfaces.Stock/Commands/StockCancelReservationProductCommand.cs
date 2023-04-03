@@ -1,11 +1,11 @@
 namespace Interfaces.Stock.Commands;
 
-public class StockCancelReleaseProductCommand
+public class StockCancelReservationProductCommand
 {
-    public StockCancelReleaseProductCommand()
+    public StockCancelReservationProductCommand()
     { }
     
-    public StockCancelReleaseProductCommand(Guid orderId,
+    public StockCancelReservationProductCommand(Guid orderId,
         Guid productId, 
         int quantity)
     {
