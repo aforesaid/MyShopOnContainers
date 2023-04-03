@@ -1,6 +1,5 @@
 using Interfaces.Stock.Commands;
 using Interfaces.Stock.Events;
-using Interfaces.Stock.Messages;
 using MassTransit;
 using MediatR;
 using Stock.Domain.Exceptions;

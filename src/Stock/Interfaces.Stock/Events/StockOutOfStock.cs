@@ -1,4 +1,4 @@
-﻿namespace Interfaces.Stock.Messages;
+﻿namespace Interfaces.Stock.Events;
 
 public class StockOutOfStock
 {

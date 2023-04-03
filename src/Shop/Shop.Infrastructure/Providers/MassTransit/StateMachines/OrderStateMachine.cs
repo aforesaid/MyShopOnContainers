@@ -1,6 +1,5 @@
 using Interfaces.Shop.Events;
 using Interfaces.Stock.Events;
-using Interfaces.Stock.Messages;
 using MassTransit;
 using MediatR;
 using Shop.Domain.Enums;
