@@ -204,6 +204,129 @@ Faulted - 100 (ошибка заказа)
 
 #### Shop
 
+Данный сервис является ключевым в данной системе, представляет из себя консольное .NET 6.0 приложение.
+
+##### Конфигурация
+
+Конфигурация сервиса выглядит следующим образом:
+```json
+{
+  "ConnectionStrings": {
+    "POSTGRES": "User ID=postgres;Password=password;Server=localhost;Port=5432;Database=shop;Integrated Security=true;",
+    "MongoDb": "mongodb://root:myPassword1@localhost:27017"
+  },
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft.AspNetCore": "Warning"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "Console",
+        "Args": {
+          "restrictedToMinimumLevel": "Debug"
+        }
+      }
+    ],
+    "Enrich": ["FromLogContext"]
+  },
+  "RABBIT_HOST": "localhost",
+  "RABBIT_LOGIN": "guest",
+  "RABBIT_PASSWORD": "guest",
+  "PrefetchCount": 100
+}
+```
+
+В секции ```ConnectionStrings``` задаются параметры для подключения к PostgreSQL и Mongo.
+
+##### Consumers
+
+> [ShopGetOrdersConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopGetOrdersConsumer.cs) - получить список заказов
+
+> [ShopReleaseProductForOrderConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopReleaseProductForOrderConsumer.cs) - завершить заказ
+
+> [ShopCancelOrderConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopCancelOrderConsumer.cs) - отменить заказ
+
+> [ShopCreateOrderConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopCreateOrderConsumer.cs) - создать заказ
+
+> [ShopReserveProductForOrderConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopReserveProductForOrderConsumer.cs) - зарезервировать заказ 
+
+В последнем используется реализация ```RoutingSlip``` от MassTransit с использованием RabbitMQ.
+
+В данном случае маршрут состоит из двух Activity: ```OrderStockStatusActivity``` и ```OrderReserveProductActivity```
+
+```C#
+public async Task Consume(ConsumeContext<ShopReserveProductForOrderCommand> context)
+{
+   var request = context.Message;
+
+   var builder = new RoutingSlipBuilder(NewId.NextGuid());
+
+   builder.AddActivity(nameof(OrderStockStatusActivity), 
+   _provider.GetExecuteEndpoint<OrderStockStatusActivity, OrderStockStatusActivityArguments>(),
+      new OrderStockStatusActivityArguments(orderId: request.OrderId));
+
+   builder.AddActivity(nameof(OrderReserveProductActivity), 
+   _provider.GetExecuteEndpoint<OrderReserveProductActivity, OrderReserveProductActivityArguments>(),
+      new OrderReserveProductActivityArguments(orderId: request.OrderId));
+
+   await builder.AddSubscription(context.SourceAddress,
+      RoutingSlipEvents.Faulted | RoutingSlipEvents.Supplemental,
+      RoutingSlipEventContents.None,
+      x => x.Send(new OrderFaulted(request.OrderId)));
+
+   var routingSlip = builder.Build();
+
+   await context.Execute(routingSlip);
+}
+```
+
+##### Activities
+
+> [OrderStockStatusActivity](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/CouriersActivities/OrderStockStatusActivity.cs) - валидация товаров, указанных в заказе, проверка наличия их на складе
+
+> [OrderReserveProductActivity](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/CouriersActivities/OrderReserveProductActivity.cs) - запуск резервирования товаров на складе для заказа
+
+##### StateMachines
+
+> [OrderStateMachine](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/StateMachines/OrderStateMachine.cs)
+
+###### Конфигурация стейт-машины
+
+```C#
+serviceCollection.AddMassTransit(x =>
+{
+   ...
+   x.UsingRabbitMq((context, cfg) =>
+   {
+      ...
+      x.AddSagaStateMachine<OrderStateMachine, OrderState>()
+         .MongoDbRepository(r =>
+      {
+        r.Connection = configuration.GetConnectionString("MongoDb");
+        r.DatabaseName = ordersDatabase;
+      });
+      ...
+   }
+}
+```
+StateMachine состоит из 7 статусов, каждый из которых имеет аналогию с доменными статусами заказов, за исключением двух: 
+```ReleaseProcessing``` и ```CancelProcessing``` - они промежуточные.
+
+В стейт-машине ```OrderStateMachine``` кроме внутренних event-ов по заказам также используются внешние от сервиса ```Stock```, при этом сервисы в данном контексте ничего друг о друге не знают, так как на стороне сервиса ```Stock``` события публикуются для всех подписчиков.
+
+###### Activities
+
+Данные активности являются частью бизнес-логики ```OrderStateMachine```.
+
+> [AcceptOrderActivity](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/StateMachines/OrderStateMachineActivities/AcceptOrderActivity.cs) - инициация резервирования заказа
+
+> [CancelOrderActivity](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/StateMachines/OrderStateMachineActivities/CancelOrderActivity.cs) - инициация отмены заказа
+
+> [ReleaseOrderActivity](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/StateMachines/OrderStateMachineActivities/ReleaseOrderActivity.cs) - инициация завершения заказа
+
 #### Stock
 
 ### Docker
