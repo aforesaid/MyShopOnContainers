@@ -2,7 +2,7 @@
 
 Схема взаимодействия сервисов
 
-![Scheme](https://github.com/bezlla/MyShopOnContainers/blob/dev/images/Scheme.jpg)
+![Scheme](https://github.com/bezlla/MyShopOnContainers/blob/master/images/Scheme.jpg)
 
 ## Stack
 * .NET 6.0, [ASP .NET 6.0](https://learn.microsoft.com/en-us/aspnet/core/?view=aspnetcore-6.0)
@@ -37,7 +37,7 @@ Web API служит шлюзом для пользовательского вз
 
 > http://localhost:5000/swagger
 
-![Swagger](https://github.com/bezlla/MyShopOnContainers/blob/dev/images/Swagger.jpg)
+![Swagger](https://github.com/bezlla/MyShopOnContainers/blob/master/images/Swagger.jpg)
 
 Типовый алгоритм использования:
 
@@ -355,4 +355,4 @@ docker-compose build
 docker-compose up
 ```
 
-Детали конфигурации docker-compose вы можете найти [здесь](https://github.com/bezlla/MyShopOnContainers/blob/dev/docker-compose.yml).
+Детали конфигурации docker-compose вы можете найти [здесь](https://github.com/bezlla/MyShopOnContainers/blob/master/docker-compose.yml).
