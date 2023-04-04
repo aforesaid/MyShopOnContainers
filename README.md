@@ -243,15 +243,15 @@ Faulted - 100 (ошибка заказа)
 
 ##### Consumers
 
-> [ShopGetOrdersConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopGetOrdersConsumer.cs) - получить список заказов
+> [ShopGetOrdersConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopGetOrdersConsumer.cs) ```Request/Response``` - получение список заказов 
 
-> [ShopReleaseProductForOrderConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopReleaseProductForOrderConsumer.cs) - завершить заказ
+> [ShopCreateOrderConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopCreateOrderConsumer.cs) ```Request/Response``` - создание заказа
 
-> [ShopCancelOrderConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopCancelOrderConsumer.cs) - отменить заказ
+> [ShopReleaseProductForOrderConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopReleaseProductForOrderConsumer.cs) - завершение заказа
 
-> [ShopCreateOrderConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopCreateOrderConsumer.cs) - создать заказ
+> [ShopCancelOrderConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopCancelOrderConsumer.cs) - отмена заказа
 
-> [ShopReserveProductForOrderConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopReserveProductForOrderConsumer.cs) - зарезервировать заказ 
+> [ShopReserveProductForOrderConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/Consumers/ShopReserveProductForOrderConsumer.cs) - резервирование товаров для заказа 
 
 В последнем используется реализация ```RoutingSlip``` от MassTransit с использованием RabbitMQ.
 
@@ -312,10 +312,9 @@ serviceCollection.AddMassTransit(x =>
    }
 }
 ```
-StateMachine состоит из 7 статусов, каждый из которых имеет аналогию с доменными статусами заказов, за исключением двух: 
-```ReleaseProcessing``` и ```CancelProcessing``` - они промежуточные.
+StateMachine состоит из 7 статусов, каждый из которых имеет альтернативу с доменным статусом заказов, кроме двух: ```ReleaseProcessing``` и ```CancelProcessing``` - данные статусы промежуточные.
 
-В стейт-машине ```OrderStateMachine``` кроме внутренних event-ов по заказам также используются внешние от сервиса ```Stock```, при этом сервисы в данном контексте ничего друг о друге не знают, так как на стороне сервиса ```Stock``` события публикуются для всех подписчиков.
+В ```OrderStateMachine``` кроме внутренних событий по заказам также используются внешние по складу от сервиса ```Stock```, при этом сервисы в данном контексте ничего друг о друге не знают, так как события публикуются для всех подписчиков.
 
 ###### Activities
 
@@ -328,6 +327,22 @@ StateMachine состоит из 7 статусов, каждый из кото�
 > [ReleaseOrderActivity](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Shop/Shop.Infrastructure/Providers/MassTransit/StateMachines/OrderStateMachineActivities/ReleaseOrderActivity.cs) - инициация завершения заказа
 
 #### Stock
+
+Конфигурация сервиса схожа с сервисом ```Shop```, отдельного рассмотрения не требует.
+
+##### Consumers
+
+> [StockGetProductListConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Stock/Stock.Infrastructure/Providers/MassTransit/Consumers/StockGetProductListConsumer.cs) ```Request/Response``` - получение списка товаров
+
+> [StockAddProductConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Stock/Stock.Infrastructure/Providers/MassTransit/Consumers/StockAddProductConsumer.cs) ```Request/Response``` - добавление нового товара
+
+> [StockSupplyProductConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Stock/Stock.Infrastructure/Providers/MassTransit/Consumers/StockSupplyProductConsumer.cs) ```Request/Response``` - создание новой поставки, добавление доступных товаров для существующего продукта
+
+> [StockCancelReservationProductConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Stock/Stock.Infrastructure/Providers/MassTransit/Consumers/StockCancelReservationProductConsumer.cs) - отмена брони товара
+
+> [StockReleaseProductConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Stock/Stock.Infrastructure/Providers/MassTransit/Consumers/StockReleaseProductConsumer.cs) - выпуск товара
+
+> [StockReserveProductConsumer](https://github.com/bezlla/MyShopOnContainers/blob/master/src/Stock/Stock.Infrastructure/Providers/MassTransit/Consumers/StockReserveProductConsumer.cs) - бронирование товара
 
 ### Docker
 
